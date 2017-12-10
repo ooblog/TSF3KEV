@@ -1,0 +1,310 @@
+#! /usr/bin/env TSF
+#! TSF ver2
+TSF_Tab-Separated-Forth:
+	TSFdoc_v2.tsf	#!TSF_runagain	#!TSF_fin.
+TSFdocs_files:
+	../README.md	../ver2test/README.html
+TSFdocs_basedocs:
+	TSFdocs_baseMD:	TSFdocs_baseHTML:
+TSFdocs_baseMD:
+	{?TSFreadmebody}
+TSFdocs_baseHTML:
+	{?TSFhtmlheader}{?TSFreadmebody}{?TSFhtmlfooter}
+TSFdocs_imports:
+	sample_aboutTSF.tsf
+{@sample_aboutTSF.tsf}
+	sample_aboutTSF.tsf	sample_aboutTSF.tsf
+TSFimport_ext:
+	.tsf
+TSFimport_regex:
+	regex_TSF:	regex_none:
+regex_TSF:
+	regexTSF_reg:	regexTSF_txt:	#!TSF_replacesRSN
+regexTSF_reg:
+	^
+regexTSF_txt:
+	    
+regex_none:
+	#!TSF_pullFthat
+TSFdocs_tags:
+	{?&asterisk}	{?&lt}	{?&gt}	{?TAB}	{?NL}	{?INDENT}	{?BR}	{?/CODE}	{?CODE}	{?/P}	{?P}	{?/H3}	{?H3}	{?/H2}	{?H2}	{?/H1}	{?H1}
+	{@sample_aboutTSF.tsf}
+	{$A_LTsv10kanedit_text}	{$A_LTsv10kanedit_href}	{$A_LTsv10kanedit_title}	{?A_LTsv10kanedit}
+	{$A_HSP_text}	{$A_HSP_href}	{$A_HSP_title}	{?A_HSP}
+	{$A_BaCon_text}	{$A_BaCon_href}	{$A_BaCon_title}	{?A_BaCon}
+	{$A_Python_text}	{$A_Python_href}	{$A_Python_title}	{?A_Python}
+	{$A_D言語_text}	{$A_D言語_href}	{$A_D言語_title}	{?A_D言語}
+	{$A_TSF2kanedit_text}	{$A_TSF2kanedit_href}	{$A_TSF2kanedit_title}	{?A_TSF2kanedit}
+	{$A_TSF1KEV_text}	{$A_TSF1KEV_href}	{$A_TSF1KEV_title}	{?A_TSF2KEV}
+	{$A_syntaximage_title}	{$A_syntaximage_img}	{$A_syntaximage_href}	{$A_syntaximage_text}	{?A_syntaximage}
+	{?A_aboutTSF_text}	{$A_aboutTSF_href}	{$A_aboutTSF_title}	{?A_aboutTSF}
+	{$A_TSFdoc_text}	{$A_TSFdoc_href}	{$A_TSFdoc_title}	{?A_TSFdoc}
+	{$A_yakuyon_text}	{$A_yakuyon_href}	{$A_yakuyon_title}	{?A_yakuyon}
+	{$A_vimsyntax_text}	{$A_vimsyntax_href}	{$A_vimsyntax_title}	{?A_vimsyntax}
+	{$U_Tahrpup_title}	{$U_Tahrpup_href}	{$U_Tahrpup_text}	{?U_Tahrpup}
+	{$U_Python344_title}	{$U_Python344_href}	{$U_Python344_text}	{?U_Python344}
+	{$U_dmd_title}	{$U_dmd_href}	{$U_dmd_text}	{?U_dmd}
+	{$U_vim-trusty_title}	{$U_vim-trusty_href}	{$U_vim-trusty_text}	{?U_vim-trusty}
+	{$U_vim-kaoriya_title}	{$U_vim-kaoriya_href}	{$U_vim-kaoriya_text}	{?U_vim-kaoriya}
+	{$U_wine_title}	{$U_wine_href}	{$U_wine_text}	{?U_wine}
+	{?TSFhtmlfooter}	{?TSFreadmebody}	{?TSFhtmlheader}
+{?TSFhtmlheader}
+		{$TSFhtmlheader}	
+{$TSFhtmlheader}
+	<html lang="ja"><head>
+	 <meta charset="UTF-8" />
+	 <title>README.md</title>
+	</head><body>
+	
+{?TSFreadmebody}
+	{$TSFreadmebody}
+{$TSFreadmebody}
+	{?H1}プログラミング言語「TSF_Tab-Separated-Forth」開発準備(ver3草案)。{?/H1}
+	{?H2}TSF超ザックリ説明。{?/H2}
+	{?P}
+	TSFはForth風インタプリタです。CSV→TSV→TSF。{?BR}
+	構文は文字列をタブで区切るだけ(コメント行と関数カードでシバン「#!」を用いる程度)。{?BR}
+	{?A_syntaximage}{?BR}
+	ver3開発前につき上記画像はver2のものになります。{?BR}
+	{?/P}
+	{?H2}言語が生まれた経緯。{?/H2}
+	{?P}
+	漢直(漢字直接入力)の漢字配列やkan5x5フォントのグリフエディタの単漢字辞書など漢字データ管理でTSV(LTSVを更にアレンジしたL:Tsv)を用いてました(「{?A_LTsv10kanedit}」を参考)。{?BR}
+	実装を{?A_HSP}→{?A_BaCon}→{?A_Python}で何度か作り直す紆余曲折を経て今度は{?A_D言語}で作り直す流れでしたが、言語の変更が強いられる度に一から作り直すのはしんどい。{?BR}
+	なので、TSVにデータ(プログラム含む)を入力するだけで動作するスクリプトが欲しくなったので開発中です。{?BR}
+	プログラム本体をTSFで作れば、OSや言語などの環境差異はTSF実装の方で吸収させるという戦法を想定。{?BR}
+	当面の目標は「{?A_TSF2kanedit}」のような漢直をVimスクリプトの力を借りずに使わずに「TSF」だけで動かす事。{?BR}
+	{?/P}
+	{?H2}文法の見直し(3ver文法)。よりシンプルな構文を目指す。{?/H2}
+	{?P}
+	☐「#!」で始まる行(スタック)はコメント。「#!TSF_」「T!」で始まるカードは関数予約。「#!TSF_T!」関数カード発動で「T!」と省略記法もできるようにしたい。{?BR}
+	☐関数カード名に直接THisTHatTHeTHeyを埋め込んでたのを廃止。「#!TSF_This」「#!TSF_That」関数カードが返り値すればよい。{?BR}
+	　(#!TSF_theyは0文字列を返す。0文字列カードはスタック名一覧)。{?BR}
+	☐関数カードの末尾「C」はThatカード1枚処理、末尾「N」はThatカードN枚処理、末尾「L」はThatカードL回処理、末尾「S」はTheスタック処理。{?BR}
+	☐スタック表示指定「#!TSF_StyleC」のOTNstyleの代わりに数値指定。0の時はOneLiner。マイナスの時は右から読む縦書きに変換。{?BR}
+	☐KanEditVimのためにL:Tsvとの互換性(ラベル指定も対応)維持。{?BR}
+	{?/P}
+	{?H2}電卓の見直し(3ver文法)。符号必須化。{?/H2}
+	{?P}
+	☐「#!TSF_Calc」と「#!TSF_RPN」の統合(既にver2の時点で分数計算か小数計算かはコンマの有無で判定)。小数計算時でもinfを「pN」と表示。{?BR}
+	☐数列和「Σ」などの部分で[スタック名]を指定する事で数列も扱いたい。{?BR}
+	☐数式の構文解析高速化のためpmzの符号を必須。これにより「p(m1)→pm1z→p1」の様に絶対値の式が符号処理に吸収できる。{?BR}
+	☐絶対値は正の符号ではないので、「m2+z3」はp1ではなく「m5」になる。符号は左辺に影響を受ける。絶対値に加減算等しても絶対値のまま。{?BR}
+	☐無限大にも符号を搭載(pN|0,mN|0)。これによりmN|0でスタックの先頭、pN|0でスタックの末尾といった指定を可能に。{?BR}
+	☐0にも符号(マイナスゼロm0の導入)。これによりスタック逆順がm1からではなくm0からにできる。{?BR}
+	☐0/0およびN/Nその他N-Nなど計算不能な場合は絶対値の無限「zN」と表現。{?BR}
+	☐漢数字や符号の+-変換などは別途「#!TSF_Format」を用いる予定。{?BR}
+	{?/P}
+	{?H2}その他TSF2KEVから引きずってる未解決な箇所など。{?/H2}
+	{?P}
+	☐「tan(θ{?&asterisk}p90|z360)」を分母ゼロ「pN|0」と表記したいがとりあえず未着手。{?BR}
+	☐字列の類似度(matcHer)がD言語で再現できるか未定なので当面後回しになるかも。{?BR}
+	☐D言語で現在時刻(StopWatchではなく「現在時刻」)のミリ秒以下を取得する方法が不明なので「@ls」「@rs」系がとりあえず0を返す。{?BR}
+	{?/P}
+	{?H2}動作予定環境(開発環境はXenialPup7.5に変更予定なのでPython2系の互換は無くなるかも)。{?/H2}
+	{?P}
+	「Tahrpup6.0.5,Python2.7.6,dmd2.074.0,vim.gtk7.4.52(vim-gtk)」および{?BR}
+	「Wine1.7.18,Python3.4.4,dmd2.074.0,gvim8.0.134(KaoriYa)」でとりあえず開発予定。{?BR}
+	{?/P}
+	{?U_Tahrpup}
+	{?U_Python344}
+	{?U_dmd}
+	{?U_vim-trusty}
+	{?U_vim-kaoriya}
+	{?U_wine}
+	
+	{?H2}ライセンス・著作権など。{?/H2}
+	{?P}
+	&#35;! -- Copyright (c) 2017 ooblog --{?BR}
+	&#35;! License: MIT　https://github.com/ooblog/TSF2KEV/blob/master/LICENSE{?BR}
+	{?/P}
+{?TSFhtmlfooter}
+		{$TSFhtmlfooter}
+{$TSFhtmlfooter}
+	
+	</body></html>
+{?A_LTsv10kanedit}
+	[{$A_LTsv10kanedit_text}]({$A_LTsv10kanedit_href} "{$A_LTsv10kanedit_title}")	<a href="{$A_LTsv10kanedit_href}" title="{$A_LTsv10kanedit_title}">{$A_LTsv10kanedit_text}</a>
+{$A_LTsv10kanedit_text}
+	LTsv10kanedit
+{$A_LTsv10kanedit_href}
+	https://github.com/ooblog/LTsv10kanedit
+{$A_LTsv10kanedit_title}
+	ooblog/LTsv10kanedit: 「L:Tsv」の読み書きを中心としたモジュール群と漢字入力「kanedit」のPythonによる実装です(準備中)。
+{?A_HSP}
+	[{$A_HSP_text}]({$A_HSP_href} "{$A_HSP_title}")	<a href="{$A_HSP_href}" title="{$A_HSP_title}">{$A_HSP_text}</a>
+{$A_HSP_text}
+	HSP
+{$A_HSP_href}
+	http://hsp.tv/
+{$A_HSP_title}
+	HSPTV!（HSP( Hot Soup Processor )ソフトウェアの配布）
+{?A_BaCon}
+	[{$A_BaCon_text}]({$A_BaCon_href} "{$A_BaCon_title}")	<a href="{$A_BaCon_href}" title="{$A_BaCon_title}">{$A_BaCon_text}</a>
+{$A_BaCon_text}
+	BaCon
+{$A_BaCon_href}
+	http://www.basic-converter.org/
+{$A_BaCon_title}
+	BaCon - BASIC to C converter
+{?A_Python}
+	[{$A_Python_text}]({$A_Python_href} "{$A_Python_title}")	<a href="{$A_Python_href}" title="{$A_Python_title}">{$A_Python_text}</a>
+{$A_Python_text}
+	Python
+{$A_Python_href}
+	https://www.python.org/
+{$A_Python_title}
+	Welcome to Python.org
+{?A_D言語}
+	[{$A_D言語_text}]({$A_D言語_href} "{$A_D言語_title}")	<a href="{$A_D言語_href}" title="{$A_D言語_title}">{$A_D言語_text}</a>
+{$A_D言語_text}
+	D言語
+{$A_D言語_href}
+	https://dlang.org/
+{$A_D言語_title}
+	Home - D Programming Language
+{?A_TSF2kanedit}
+	[{$A_TSF2kanedit_text}]({$A_TSF2kanedit_href} "{$A_TSF2kanedit_title}")	<a href="{$A_TSF2kanedit_href}" title="{$A_TSF2kanedit_title}">{$A_TSF2kanedit_text}</a>
+{$A_TSF2kanedit_text}
+	TSF2KEV/kanedit.vim
+{$A_TSF2kanedit_href}
+	https://github.com/ooblog/TSF2KEV/blob/master/KEV2/kanedit.vim
+{$A_TSF2kanedit_title}
+	TSF2KEV/kanedit.vim at master ooblog/TSF2KEV
+{?A_TSF2KEV}
+	[{$A_TSF1KEV_text}]({$A_TSF1KEV_href} "{$A_TSF1KEV_title}")	<a href="{$A_TSF1KEV_href}" title="{$A_TSF1KEV_title}">{$A_TSF1KEV_text}</a>
+{$A_TSF1KEV_text}
+	TSF2KEV(https://ooblog.github.io/TSF2KEV/)
+{$A_TSF1KEV_href}
+	https://ooblog.github.io/TSF2KEV/
+{$A_TSF1KEV_title}
+	「TSF2KEV」はプログラミング言語「TSF_Tab-Separated-Forth」のD言語とPythonによる実装です。
+{?A_syntaximage}
+	![{$A_syntaximage_text}]({$A_syntaximage_href} "{$A_syntaximage_title}")	<a href="{$A_syntaximage_href}"><img src="{$A_syntaximage_img}" alt="{$A_syntaximage_text}" title="{$A_syntaximage_title}" width="512" height="384"></a>
+{$A_syntaximage_text}
+	TSF syntax image
+{$A_syntaximage_href}
+	https://github.com/ooblog/TSF2KEV/blob/master/docs/TSF_512x384.png
+{$A_syntaximage_img}
+	https://github.com/ooblog/TSF2KEV/raw/master/docs/TSF_512x384.png
+{$A_syntaximage_title}
+	TSF2KEV/TSF_512x384.png at master ooblog/TSF2KEV
+{?A_aboutTSF}
+	[{?A_aboutTSF_text}]({$A_aboutTSF_href} "{$A_aboutTSF_title}")	<a href="{$A_aboutTSF_href}" title="{$A_aboutTSF_title}">{?A_aboutTSF_text}</a>
+{?A_aboutTSF_text}
+	{$A_aboutTSF_text}
+{$A_aboutTSF_text}
+	sample_aboutTSF.tsf
+{$A_aboutTSF_href}
+	https://github.com/ooblog/TSF2KEV/blob/master/sample/sample_aboutTSF.tsf
+{$A_aboutTSF_title}
+	TSF2KEV/sample_aboutTSF.tsf at master ooblog/TSF2KEV
+{?A_TSFdoc}
+	[{$A_TSFdoc_text}]({$A_TSFdoc_href} "{$A_TSFdoc_title}")	<a href="{$A_TSFdoc_href}" title="{$A_TSFdoc_title}">{$A_TSFdoc_text}</a>
+{$A_TSFdoc_text}
+	TSFdoc.tsf
+{$A_TSFdoc_href}
+	https://github.com/ooblog/TSF2KEV/blob/master/sample/TSFdoc.tsf
+{$A_TSFdoc_title}
+	TSF2KEV/TSFdoc.tsf at master ooblog/TSF2KEV
+{?A_yakuyon}
+	[{$A_yakuyon_text}]({$A_yakuyon_href} "{$A_yakuyon_title}")	<a href="{$A_yakuyon_href}" title="{$A_yakuyon_title}">{$A_yakuyon_text}</a>
+{$A_yakuyon_text}
+	約四文字
+{$A_yakuyon_href}
+	https://ooblog.github.io/
+{$A_yakuyon_title}
+	「約四文字」(http://ooblog.github.io/)
+{?A_vimsyntax}
+	[{$A_vimsyntax_text}]({$A_vimsyntax_href} "{$A_vimsyntax_title}")	<a href="{$A_vimsyntax_href}" title="{$A_vimsyntax_title}">{$A_vimsyntax_text}</a>
+{$A_vimsyntax_text}
+	vimsyntax/tsf.vim
+{$A_vimsyntax_href}
+	https://github.com/ooblog/TSF2KEV/blob/master/vimsyntax/tsf.vim
+{$A_vimsyntax_title}
+	TSF2KEV/tsf.vim at master ooblog/TSF2KEV
+{?U_Tahrpup}
+	* {$U_Tahrpup_text}{?NL}    * [{$U_Tahrpup_href}]({$U_Tahrpup_href} "{$U_Tahrpup_title}")	<ul><li>{$U_Tahrpup_text}<ul><li><a href="{$U_Tahrpup_href}" title="{$U_Tahrpup_title}">{$U_Tahrpup_href}</a></li></ul></li></ul>
+{$U_Tahrpup_text}
+	Tahrpup6.0.5(Puppy Linux)
+{$U_Tahrpup_href}
+	http://puppylinux.com/
+{$U_Tahrpup_title}
+	Puppy Linux Home
+{?U_Python344}
+	* {$U_Python344_text}{?NL}    * [{$U_Python344_href}]({$U_Python344_href} "{$U_Python344_title}")	<ul><li>{$U_Python344_text}<ul><li><a href="{$U_Python344_href}" title="{$U_Python344_title}">{$U_Python344_href}</a></li></ul></li></ul>
+{$U_Python344_text}
+	Python 3.4.4
+{$U_Python344_href}
+	https://www.python.org/downloads/release/python-344/
+{$U_Python344_title}
+	Python Release Python 3.4.4 | Python.org
+{?U_dmd}
+	* {$U_dmd_text}{?NL}    * [{$U_dmd_href}]({$U_dmd_href} "{$U_dmd_title}")	<ul><li>{$U_dmd_text}<ul><li><a href="{$U_dmd_href}" title="{$U_dmd_title}">{$U_dmd_href}</a></li></ul></li></ul>
+{$U_dmd_text}
+	DMD 2.074.0
+{$U_dmd_href}
+	https://dlang.org/download.html
+{$U_dmd_title}
+	Downloads - D Programming Language
+{?U_vim-trusty}
+	* {$U_vim-trusty_text}{?NL}    * [{$U_vim-trusty_href}]({$U_vim-trusty_href} "{$U_vim-trusty_title}")	<ul><li>{$U_vim-trusty_text}<ul><li><a href="{$U_vim-trusty_href}" title="{$U_vim-trusty_title}">{$U_vim-trusty_href}</a></li></ul></li></ul>
+{$U_vim-trusty_text}
+	vim-gtk(Ubuntu trusty)
+{$U_vim-trusty_href}
+	https://packages.ubuntu.com/trusty/vim-gtk
+{$U_vim-trusty_title}
+	Ubuntu – trusty の vim-gtk パッケージに関する詳細
+{?U_vim-kaoriya}
+	* {$U_vim-kaoriya_text}{?NL}    * [{$U_vim-kaoriya_href}]({$U_vim-kaoriya_href} "{$U_vim-kaoriya_title}")	<ul><li>{$U_vim-kaoriya_text}<ul><li><a href="{$U_vim-kaoriya_href}" title="{$U_vim-kaoriya_title}">{$U_vim-kaoriya_href}</a></li></ul></li></ul>
+{$U_vim-kaoriya_text}
+	Vim — KaoriYa
+{$U_vim-kaoriya_href}
+	https://www.kaoriya.net/software/vim/
+{$U_vim-kaoriya_title}
+	Vim — KaoriYa
+{?U_wine}
+	* {$U_wine_text}{?NL}    * [{$U_wine_href}]({$U_wine_href} "{$U_wine_title}")	<ul><li>{$U_wine_text}<ul><li><a href="{$U_wine_href}" title="{$U_wine_title}">{$U_wine_href}</a></li></ul></li></ul>
+{$U_wine_text}
+	Portable Wine(shinobar.server-on.net)
+{$U_wine_href}
+	http://shinobar.server-on.net/puppy/opt/wine-portable-HELP_ja.html
+{$U_wine_title}
+	Portable Wine
+{?H1}
+	# 	<h1>
+{?/H1}
+		</h1>
+{?H2}
+	## 	<h2>
+{?/H2}
+		</h2>
+{?H3}
+	### 	<h3>
+{?/H3}
+		</h3>
+{?P}
+		<p>
+{?/P}
+		</p>
+{?CODE}
+		<pre><code>
+{?/CODE}
+		</code></pre>
+{?BR}
+	  	<br />
+{?INDENT}
+	    
+{?TAB}
+	@T
+{?NL}
+	@E
+{?&lt}
+	<	&lt;
+{?&gt}
+	>	&gt;
+{?&asterisk}
+	&#42;	*
+
+#! -- Copyright (c) 2017 ooblog --
+#! License: MIT　https://github.com/ooblog/TSF3KEV/blob/master/LICENSE
