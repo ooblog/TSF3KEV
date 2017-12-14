@@ -62,8 +62,7 @@ string TSF_CTC_loadtext(string TSF_path, ...){    //#TSFdoc:ファイルから�
       switch( TSF_encoding ){
         case "cp932":
 //          TSF_text=fromMBSz(toStringz(to!char[](TSF_text)));
-        default:
-        break;
+        default:  break;
       }
     }
     return TSF_text;
@@ -118,16 +117,48 @@ string TSF_CTC_ESCdecode(string TSF_textdup){   //#TSFdoc:「&tab;」を「\t」
     return TSF_text;
 }
 
+string TSF_CTC_RPN(string TSF_RPN){    //#TSFdoc:逆ポーランド電卓。コンマを含む式は小数特化して高速化を図る。(TSFAPI)
+    string TSF_RPNanswer="";
+    real[] TSF_RPNstack=[];  real TSF_RPNstackL,TSF_RPNstackR,TSF_RPNstackF;
+    string TSF_RPNnum="";  size_t TSF_RPNminus=0;  string[] TSF_RPNcalcND;
+    string TSF_RPNseq=join([TSF_RPN.stripLeft(','),"  "]);
+    switch( TSF_RPNseq.front ){
+      case '+': TSF_RPNseq="p"~TSF_RPNseq[1..$]; break;
+      case '-': TSF_RPNseq="m"~TSF_RPNseq[1..$]; break;
+      case '*': TSF_RPNseq=""~TSF_RPNseq[1..$]; break;
+      case '/': TSF_RPNseq="1|"~TSF_RPNseq[1..$]; break;
+      case 'U': if( TSF_RPNseq[1]=='+' ){ TSF_RPNseq="$"~TSF_RPNseq[2..$]; } break;  //"U+"
+      case '0': if( TSF_RPNseq[1]=='x' ){ TSF_RPNseq="$"~TSF_RPNseq[2..$]; } break;  //"0x"
+      default:  break;
+    }
+    opeexit_rpn:
+      foreach(char TSF_RPNope;TSF_RPNseq){
+        if( count("0123456789abcdef.pm$|",TSF_RPNope) ){
+            TSF_RPNnum~=TSF_RPNope;
+        }
+        else{}
+      }
+    if( TSF_RPNstack.length ){
+        TSF_RPNstackL=TSF_RPNstack.back; TSF_RPNstack.popBack();
+    }
+    else{
+        TSF_RPNstackL=0.0;
+    }
+        TSF_RPNanswer=to!string(TSF_RPNstackL);
+    return TSF_RPNanswer;
+}
+
 
 unittest {
     string TSF_printlog="";
     std.stdio.writeln("unittest--- %s ---".format(__FILE__));
-    TSF_printlog=TSF_CTC_printlog("日本語テスト",TSF_printlog);
-    std.stdio.writeln(TSF_printlog);
-    string TSF_mdtext="";
-    TSF_mdtext=TSF_CTC_loadtext("README.md");
-    TSF_CTC_savetext("debug/README.txt",TSF_mdtext);
-    TSF_CTC_printlog(TSF_mdtext);
+//    TSF_printlog=TSF_CTC_printlog("日本語テスト",TSF_printlog);
+//    std.stdio.writeln(TSF_printlog);
+//    string TSF_mdtext="";
+//    TSF_mdtext=TSF_CTC_loadtext("README.md");
+//    TSF_CTC_savetext("debug/README.txt",TSF_mdtext);
+//    TSF_CTC_printlog(TSF_mdtext);
+    TSF_CTC_printlog(TSF_CTC_RPN("1,2+"));
     
 //    TSF_CTC_debug(TSF_CTC_argvs(["README.md","TSF_CalcTimeCode.d"]));
 }
