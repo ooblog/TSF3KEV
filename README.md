@@ -40,10 +40,11 @@ ver3開発前につき上記画像はver2のものになります。
 ☐字列の類似度(matcHer)がD言語で再現できるか未定なので当面後回しになるかも。  
 ☐D言語で現在時刻(StopWatchではなく「現在時刻」)のミリ秒以下を取得する方法が不明なので「@ls」「@rs」系がとりあえず0を返す。  
 
-## 動作予定環境(開発環境はXenialPup7.5に変更予定なのでPython2系の互換は無くなるかも)。
+## 開発環境対応言語について(開発環境はXenialPup7.5に変更予定なのでPython2系の互換は無くなるかも)。
 
-「Tahrpup6.0.5,Python2.7.6,dmd2.074.0,vim.gtk7.4.52(vim-gtk)」および  
-「Wine1.7.18,Python3.4.4,dmd2.074.0,gvim8.0.134(KaoriYa)」でとりあえず開発予定。  
+☑Tahrpup6.0.5,Wine1.7.18共にdmd2.077.1で開発。  
+☐D言語以外のプログラム言語はTSFで作ったテンプレートを元にジェネレータで変換する予定。  
+☐PythonやVimのバージョンはXenialPupに移行するまで未定(Tahrpup6.0.5ではPython2.7.6,vim.gtk7.4.52)。  
 
 * Tahrpup6.0.5(Puppy Linux)
     * [http://puppylinux.com/](http://puppylinux.com/ "Puppy Linux Home")

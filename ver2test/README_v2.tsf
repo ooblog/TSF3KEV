@@ -101,10 +101,11 @@ TSFdocs_tags:
 	☐字列の類似度(matcHer)がD言語で再現できるか未定なので当面後回しになるかも。{?BR}
 	☐D言語で現在時刻(StopWatchではなく「現在時刻」)のミリ秒以下を取得する方法が不明なので「@ls」「@rs」系がとりあえず0を返す。{?BR}
 	{?/P}
-	{?H2}動作予定環境(開発環境はXenialPup7.5に変更予定なのでPython2系の互換は無くなるかも)。{?/H2}
+	{?H2}開発環境対応言語について(開発環境はXenialPup7.5に変更予定なのでPython2系の互換は無くなるかも)。{?/H2}
 	{?P}
-	「Tahrpup6.0.5,Python2.7.6,dmd2.074.0,vim.gtk7.4.52(vim-gtk)」および{?BR}
-	「Wine1.7.18,Python3.4.4,dmd2.074.0,gvim8.0.134(KaoriYa)」でとりあえず開発予定。{?BR}
+	☑Tahrpup6.0.5,Wine1.7.18共にdmd2.077.1で開発。{?BR}
+	☐D言語以外のプログラム言語はTSFで作ったテンプレートを元にジェネレータで変換する予定。{?BR}
+	☐PythonやVimのバージョンはXenialPupに移行するまで未定(Tahrpup6.0.5ではPython2.7.6,vim.gtk7.4.52)。{?BR}
 	{?/P}
 	{?U_Tahrpup}
 	{?U_Python344}
