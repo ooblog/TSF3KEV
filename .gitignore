@@ -151,3 +151,4 @@ venv.bak/
 # git branch -d 20171210U233157
 TSF
 cardsize/
+debug/
