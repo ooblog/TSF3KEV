@@ -24,6 +24,11 @@ import std.array;
 
 //size_t TSF_maxint=size_t.max;  size_t TSF_minint=size_t.min;
 
+char[string] TSF_CTC_PmzDiv;
+void TSF_CTC_Init(){    //#TSFdoc:D言語は連想配列初期化(ハッシュのコンパイル前計算)できないので初期化専用関数を用意。
+    TSF_CTC_PmzDiv=["pp":'p',"pm":'m',"pz":'p',"mp":'m',"mm":'p',"mz":'m',"zp":'z',"zm":'z',"zz":'z'];
+}
+
 string TSF_CTC_printlog(string TSF_textdup, ...){    //#TSFdoc:テキストをstdoutに表示。ログ追記もできる。(TSFAPI)
     string TSF_log=""; string TSF_text=TSF_textdup.stripRight('\n');
     if( _arguments.length>0 && _arguments[0]==typeid(string) ){
@@ -117,33 +122,33 @@ string TSF_CTC_ESCdecode(string TSF_textdup){   //#TSFdoc:「&tab;」を「\t」
     return TSF_text;
 }
 
-char[string] TSF_CTC_PmzDiv;
+//char[string] TSF_CTC_PmzDiv;
 auto TSF_CTC_PmzNum(string TSF_num){    //#TSFdoc:正負符号の抽出。(TSFAPI)
     long TSF_p=0,TSF_m=0,TSF_z=TSF_num.length;  char TSF_pmz='z';
-    string[] TSF_numND;  char[] TSF_pmzND=['z','z'];  string TSF_pmzdiv="zz";
+    string[] TSF_numND;  char[] TSF_pmzND=['z','z'];  string TSF_pmzcase="zz";
     if( count(TSF_num,'|') ){  TSF_numND=TSF_num.split("|")[0..2];  }else{  TSF_numND=[TSF_num,"z1"];  }
     foreach(size_t i;0..2){
       TSF_p=indexOf(TSF_numND[i],'p');  if( TSF_p<0 ){  TSF_p=TSF_numND[i].length;  }
       TSF_m=indexOf(TSF_numND[i],'m');  if( TSF_m<0 ){  TSF_m=TSF_numND[i].length;  }
       TSF_z=indexOf(TSF_numND[i],'z');  if( TSF_z<0 ){  TSF_z=TSF_numND[i].length;  }
       if( (TSF_p<TSF_m)&&(TSF_p<TSF_z) ){  TSF_pmzND[i]='p';  }
-      if( (TSF_m<TSF_p)&&(TSF_p<TSF_z) ){  TSF_pmzND[i]='m';  }
+      if( (TSF_m<TSF_p)&&(TSF_m<TSF_z) ){  TSF_pmzND[i]='m';  }
       if( (TSF_z<TSF_p)&&(TSF_z<TSF_m) ){  TSF_pmzND[i]='z';  }
       TSF_numND[i]=TSF_numND[i].replace("p","").replace("m","").replace("z","").replace(" ","");
     }
-    TSF_pmzdiv=to!string(TSF_pmzND[0])~to!string(TSF_pmzND[1]);
-    TSF_CTC_PmzDiv=["pp":'p',"pm":'m',"pz":'p',"mp":'m',"mm":'p',"mz":'m',"zp":'z',"zm":'z',"zz":'z'];
-    if( TSF_pmzdiv in TSF_CTC_PmzDiv ){  TSF_pmz=TSF_CTC_PmzDiv[TSF_pmzdiv]; }else{  TSF_pmz='z';  }
+//    TSF_CTC_PmzDiv=["pp":'p',"pm":'m',"pz":'p',"mp":'m',"mm":'p',"mz":'m',"zp":'z',"zm":'z',"zz":'z'];
+    TSF_pmzcase=to!string(TSF_pmzND[0])~to!string(TSF_pmzND[1]);
+    if( TSF_pmzcase in TSF_CTC_PmzDiv ){  TSF_pmz=TSF_CTC_PmzDiv[TSF_pmzcase]; }else{  TSF_pmz='z';  }
     return Tuple!(char,string,string)(TSF_pmz,TSF_numND[0],TSF_numND[1]);
 }
 
-string TSF_CTC_RPNZERO="N";
+string TSF_CTC_RPNZERO="n";
 string TSF_CTC_RPN(string TSF_RPN){    //#TSFdoc:逆ポーランド電卓。コンマを含む式は小数特化して高速化を図る。(TSFAPI)
     string TSF_RPNanswer="";
     dchar[] TSF_RPNpmzstack=[];  dchar TSF_RPNpmzstackL='z',TSF_RPNpmzstackR='z',TSF_RPNpmzstackF='z';
     real[] TSF_RPNnumstack=[];  real TSF_RPNnumstackL=0.0,TSF_RPNnumstackR=0.0,TSF_RPNnumstackF=0.0;
-    string TSF_RPNnum="";  string[] TSF_RPNcalcND;  real TSF_RPNcalcN,TSF_RPNcalcD;
-    long TSF_RPN_p=0,TSF_RPN_m=0,TSF_RPN_z=0;  char TSF_RPN_pmz='z';
+    string TSF_RPNnum="";  string[2] TSF_RPNcalcND;  real TSF_RPNcalcN,TSF_RPNcalcD;
+    long TSF_RPN_p=0,TSF_RPN_m=0,TSF_RPN_z=0;  char TSF_RPN_pmz='z';  string TSF_RPN_pmzcase="zz";
     string TSF_RPNseq=join([TSF_RPN.stripLeft(','),"  "]);
     switch( TSF_RPNseq.front ){
       case '+': TSF_RPNseq="p"~TSF_RPNseq[1..$]; break;
@@ -155,17 +160,18 @@ string TSF_CTC_RPN(string TSF_RPN){    //#TSFdoc:逆ポーランド電卓。コ�
       default:  break;
     }
     opeexit_rpn:
-      foreach(char TSF_RPNope;TSF_RPNseq){
-        if( count("0123456789abcdef.pmz$|",TSF_RPNope) ){
-          TSF_RPNnum~=TSF_RPNope;
+      foreach(char TSF_RPN_ope;TSF_RPNseq){
+        if( count("0123456789abcdef.pmz$|",TSF_RPN_ope) ){
+          TSF_RPNnum~=TSF_RPN_ope;
         }
         else{
           TSF_RPN_z=TSF_RPNnum.length;
           if( TSF_RPNnum.length>0 ){
             auto TSF_CTC_PmzNum_Tuple=TSF_CTC_PmzNum(TSF_RPNnum);
-            TSF_RPN_pmz=TSF_CTC_PmzNum_Tuple[0];
+            TSF_RPN_pmz=TSF_CTC_PmzNum_Tuple[0];  TSF_RPNcalcND[0]=TSF_CTC_PmzNum_Tuple[1];  TSF_RPNcalcND[1]=TSF_CTC_PmzNum_Tuple[2];
             try{
-              TSF_RPNcalcN=to!real(TSF_CTC_PmzNum_Tuple[1]);  TSF_RPNcalcD=to!real(TSF_CTC_PmzNum_Tuple[2]);
+              TSF_RPNcalcN=count(TSF_RPNcalcND[0],'$')?to!real(to!long(TSF_RPNcalcND[0].replace("$",""),16)):to!real(TSF_RPNcalcND[0]);
+              TSF_RPNcalcD=count(TSF_RPNcalcND[$-1],'$')?to!real(to!long(TSF_RPNcalcND[1].replace("$",""),16)):to!real(TSF_RPNcalcND[1]);
             }
             catch(ConvException e){
               TSF_RPNanswer=TSF_CTC_RPNZERO;
@@ -181,10 +187,62 @@ string TSF_CTC_RPN(string TSF_RPN){    //#TSFdoc:逆ポーランド電卓。コ�
             }
             TSF_RPNnum="";
           }
-//          if( count("SCTsrtRELl",TSF_RPNope) ){
-//          if( count("+-*/\\_#%<>AH^,TSF_RPNope) ){
-//          if( count("QqOoUu",TSF_RPNope) ){
-//          if( count("!SCTsrtRELl",TSF_RPNope) ){
+          if( count("+-*/\\_#%<>AH^",TSF_RPN_ope) ){  // stackL,stackR
+            if( TSF_RPNnumstack.length ){
+              TSF_RPNnumstackR=TSF_RPNnumstack.back; TSF_RPNnumstack.popBack();
+              TSF_RPNpmzstackR=TSF_RPNpmzstack.back; TSF_RPNpmzstack.popBack();
+            }
+            else{
+                TSF_RPNnumstackR=0.0;  TSF_RPNpmzstackR='z';
+            }
+            if( TSF_RPNnumstack.length ){
+              TSF_RPNnumstackL=TSF_RPNnumstack.back; TSF_RPNnumstack.popBack();
+              TSF_RPNpmzstackL=TSF_RPNpmzstack.back; TSF_RPNpmzstack.popBack();
+            }
+            else{
+                TSF_RPNnumstackL=0.0;  TSF_RPNpmzstackL='z';
+            }
+            TSF_RPN_pmzcase=to!string(TSF_RPNpmzstackL)~to!string(TSF_RPNpmzstackR);
+            switch( TSF_RPN_ope ){
+              case '+':
+                switch( TSF_RPN_pmzcase ){
+                  case "pp":
+                    TSF_RPNnumstackL=+TSF_RPNnumstackL+TSF_RPNnumstackR;
+                  break;
+                  case "pm":
+                    TSF_RPNnumstackL=+TSF_RPNnumstackL-TSF_RPNnumstackR;  if( TSF_RPNnumstackL<0 ){ TSF_RPNpmzstackL='m'; }
+                  break;
+                  case "pz":
+                    TSF_RPNnumstackL=+TSF_RPNnumstackL+TSF_RPNnumstackR;
+                  break;
+                  case "mp":
+                    TSF_RPNnumstackL=-TSF_RPNnumstackL+TSF_RPNnumstackR;  if( TSF_RPNnumstackL>0 ){ TSF_RPNpmzstackL='p'; }
+                  break;
+                  case "mm":
+                    TSF_RPNnumstackL=-TSF_RPNnumstackL-TSF_RPNnumstackR;
+                  break;
+                  case "mz":
+                    TSF_RPNnumstackL=-TSF_RPNnumstackL-TSF_RPNnumstackR;
+                  break;
+                  case "zp":
+                    TSF_RPNnumstackL=TSF_RPNnumstackL+TSF_RPNnumstackR;
+                  break;
+                  case "zm":
+                    TSF_RPNnumstackL=TSF_RPNnumstackL-TSF_RPNnumstackR;  if( TSF_RPNnumstackL<0 ){ TSF_RPNnumstackL=real.infinity; }
+                  break;
+                  case "zz":
+                    TSF_RPNnumstackL=TSF_RPNnumstackL+TSF_RPNnumstackR;
+                  break;
+                  default:  break;
+                }
+                TSF_RPNnumstack~=abs(TSF_RPNnumstackL);  TSF_RPNpmzstack~=TSF_RPNpmzstackL;
+              break;
+              default:  break;
+            }
+          }
+//          if( count("PMZSCTsrtRELl",TSF_RPN_ope) ){  //L
+//          if( count("+-*/\\_#%<>AH^,TSF_RPN_ope) ){  //L,R
+//          if( count("QqOoUuN",TSF_RPN_ope) ){  //L,R,F
         }
       }
     if( TSF_RPNnumstack.length ){
@@ -205,6 +263,7 @@ string TSF_CTC_CalcZERO="N|0";
 
 
 unittest {
+    TSF_CTC_Init();
     string TSF_printlog="";
     std.stdio.writeln("unittest--- %s ---".format(__FILE__));
 //    TSF_printlog=TSF_CTC_printlog("日本語テスト",TSF_printlog);
@@ -213,8 +272,11 @@ unittest {
 //    TSF_mdtext=TSF_CTC_loadtext("README.md");
 //    TSF_CTC_savetext("debug/README.txt",TSF_mdtext);
 //    TSF_CTC_printlog(TSF_mdtext);
-    TSF_CTC_printlog(TSF_CTC_RPN("p1,p2+"));
-    TSF_CTC_printlog(TSF_CTC_RPN("p1.5,p2|3+"));
+    string[] RPNtests=[
+      "p1,p2+","p1,m2+","p1,z2+","m1,p2+","m1,m2+","m1,z2+","z1,p2+","z1,m2+","z1,z2+",
+    ];
+    foreach(string RPNtest;RPNtests){  TSF_CTC_printlog("TSF_CTC_RPN( %s ) %s".format(RPNtest,TSF_CTC_RPN(RPNtest)));  }
+    TSF_CTC_printlog(TSF_CTC_RPN("p1.5,p1|2+"));
     
 //    TSF_CTC_debug(TSF_CTC_argvs(["README.md","TSF_CalcTimeCode.d"]));
 }
