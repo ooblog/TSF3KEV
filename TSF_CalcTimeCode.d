@@ -174,17 +174,10 @@ string TSF_CTC_RPN(string TSF_RPN){    //#TSFdoc:逆ポーランド電卓。コ�
               TSF_RPNcalcD=count(TSF_RPNcalcND[$-1],'$')?to!real(to!long(TSF_RPNcalcND[1].replace("$",""),16)):to!real(TSF_RPNcalcND[1]);
             }
             catch(ConvException e){
-              TSF_RPNanswer=TSF_CTC_RPNZERO;
-              break;
+              TSF_RPNcalcD=0.0;  TSF_RPN_pmz='z';
             }
-            if( TSF_RPNcalcD!=0.0 ){
-              TSF_RPNnumstack~=TSF_RPNcalcN/TSF_RPNcalcD;
-              TSF_RPNpmzstack~=TSF_RPN_pmz;
-            }
-            else{
-              TSF_RPNanswer=TSF_CTC_RPNZERO;
-              break;
-            }
+            TSF_RPNnumstack~=( TSF_RPNcalcD==0 )?real.infinity:TSF_RPNcalcN/TSF_RPNcalcD;
+            TSF_RPNpmzstack~=TSF_RPN_pmz;
             TSF_RPNnum="";
           }
           if( count("+-*/\\_#%<>AH^",TSF_RPN_ope) ){  // stackL,stackR
@@ -204,7 +197,7 @@ string TSF_CTC_RPN(string TSF_RPN){    //#TSFdoc:逆ポーランド電卓。コ�
             }
             TSF_RPN_pmzcase=to!string(TSF_RPNpmzstackL)~to!string(TSF_RPNpmzstackR);
             switch( TSF_RPN_ope ){
-              case '+':
+              case '+':  // add
                 switch( TSF_RPN_pmzcase ){
                   case "pp":
                     TSF_RPNnumstackL=+TSF_RPNnumstackL+TSF_RPNnumstackR;
@@ -235,14 +228,46 @@ string TSF_CTC_RPN(string TSF_RPN){    //#TSFdoc:逆ポーランド電卓。コ�
                   break;
                   default:  break;
                 }
-                TSF_RPNnumstack~=abs(TSF_RPNnumstackL);  TSF_RPNpmzstack~=TSF_RPNpmzstackL;
+              break;
+              case '-':  // add
+                switch( TSF_RPN_pmzcase ){
+                  case "pp":
+                    TSF_RPNnumstackL=+TSF_RPNnumstackL-TSF_RPNnumstackR;
+                  break;
+                  case "pm":
+                    TSF_RPNnumstackL=+TSF_RPNnumstackL+TSF_RPNnumstackR;  if( TSF_RPNnumstackL>0 ){ TSF_RPNpmzstackL='p'; }
+                  break;
+                  case "pz":
+                    TSF_RPNnumstackL=+TSF_RPNnumstackL-TSF_RPNnumstackR;  if( TSF_RPNnumstackL<0 ){ TSF_RPNpmzstackL='m'; }
+                  break;
+                  case "mp":
+                    TSF_RPNnumstackL=-TSF_RPNnumstackL-TSF_RPNnumstackR;
+                  break;
+                  case "mm":
+                    TSF_RPNnumstackL=-TSF_RPNnumstackL+TSF_RPNnumstackR;  if( TSF_RPNnumstackL>0 ){ TSF_RPNpmzstackL='p'; }
+                  break;
+                  case "mz":
+                    TSF_RPNnumstackL=-TSF_RPNnumstackL-TSF_RPNnumstackR;
+                  break;
+                  case "zp":
+                    TSF_RPNnumstackL=TSF_RPNnumstackL-TSF_RPNnumstackR;  if( TSF_RPNnumstackL<0 ){ TSF_RPNnumstackL=real.infinity; }
+                  break;
+                  case "zm":
+                    TSF_RPNnumstackL=TSF_RPNnumstackL+TSF_RPNnumstackR;
+                  break;
+                  case "zz":
+                    TSF_RPNnumstackL=TSF_RPNnumstackL-TSF_RPNnumstackR;  if( TSF_RPNnumstackL<0 ){ TSF_RPNnumstackL=real.infinity; }
+                  break;
+                  default:  break;
+                }
               break;
               default:  break;
             }
+            TSF_RPNnumstack~=abs(TSF_RPNnumstackL);  TSF_RPNpmzstack~=TSF_RPNpmzstackL;
           }
-//          if( count("PMZSCTsrtRELl",TSF_RPN_ope) ){  //L
+//          if( count("PMZSCTIKGRLXB",TSF_RPN_ope) ){  //L
 //          if( count("+-*/\\_#%<>AH^,TSF_RPN_ope) ){  //L,R
-//          if( count("QqOoUuN",TSF_RPN_ope) ){  //L,R,F
+//          if( count("EQOVUDNF",TSF_RPN_ope) ){  //L,R,F
         }
       }
     if( TSF_RPNnumstack.length ){
@@ -253,30 +278,39 @@ string TSF_CTC_RPN(string TSF_RPN){    //#TSFdoc:逆ポーランド電卓。コ�
       TSF_RPNnumstackL=0.0;
       TSF_RPNpmzstackL='z';
     }
-    if( TSF_RPNanswer != TSF_CTC_RPNZERO ){
+    if( TSF_RPNnumstackL==real.infinity ){
+      TSF_RPNanswer=to!char(TSF_RPNpmzstackL)~TSF_CTC_RPNZERO;
+    }
+    else{
       TSF_RPNanswer=to!char(TSF_RPNpmzstackL)~to!string(TSF_RPNnumstackL);
     }
+//    if( TSF_RPNanswer != TSF_CTC_RPNZERO ){
+//      TSF_RPNanswer=to!char(TSF_RPNpmzstackL)~to!string(TSF_RPNnumstackL);
+//    }
     return TSF_RPNanswer;
 }
 
-string TSF_CTC_CalcZERO="N|0";
+string TSF_CTC_CalcZERO="n|0";
 
 
 unittest {
-    TSF_CTC_Init();
-    string TSF_printlog="";
     std.stdio.writeln("unittest--- %s ---".format(__FILE__));
+    TSF_CTC_Init();
+//    string TSF_printlog="";
 //    TSF_printlog=TSF_CTC_printlog("日本語テスト",TSF_printlog);
 //    std.stdio.writeln(TSF_printlog);
 //    string TSF_mdtext="";
 //    TSF_mdtext=TSF_CTC_loadtext("README.md");
 //    TSF_CTC_savetext("debug/README.txt",TSF_mdtext);
 //    TSF_CTC_printlog(TSF_mdtext);
+    string TSF_RPNlog="";
     string[] RPNtests=[
+      "1|2","1|0.5","1|0",
       "p1,p2+","p1,m2+","p1,z2+","m1,p2+","m1,m2+","m1,z2+","z1,p2+","z1,m2+","z1,z2+",
+      "p1,p2-","p1,m2-","p1,z2-","m1,p2-","m1,m2-","m1,z2-","z1,p2-","z1,m2-","z1,z2-",
     ];
-    foreach(string RPNtest;RPNtests){  TSF_CTC_printlog("TSF_CTC_RPN( %s ) %s".format(RPNtest,TSF_CTC_RPN(RPNtest)));  }
-    TSF_CTC_printlog(TSF_CTC_RPN("p1.5,p1|2+"));
+    foreach(string RPNtest;RPNtests){  TSF_RPNlog=TSF_CTC_printlog("TSF_CTC_RPN( %s ) %s".format(RPNtest,TSF_CTC_RPN(RPNtest)),TSF_RPNlog);  }
+    TSF_CTC_savetext("debug/TSF_CalcTimeCode.txt",TSF_RPNlog);
     
 //    TSF_CTC_debug(TSF_CTC_argvs(["README.md","TSF_CalcTimeCode.d"]));
 }
