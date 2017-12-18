@@ -161,7 +161,7 @@ string TSF_CTC_RPN(string TSF_RPN){    //#TSFdoc:逆ポーランド電卓。コ�
     }
     opeexit_rpn:
       foreach(char TSF_RPN_ope;TSF_RPNseq){
-        if( count("0123456789abcdef.pmz$|",TSF_RPN_ope) ){
+        if( count("0123456789abcdef.pmzn$|",TSF_RPN_ope) ){
           TSF_RPNnum~=TSF_RPN_ope;
         }
         else{
@@ -171,10 +171,15 @@ string TSF_CTC_RPN(string TSF_RPN){    //#TSFdoc:逆ポーランド電卓。コ�
             TSF_RPN_pmz=TSF_CTC_PmzNum_Tuple[0];  TSF_RPNcalcND[0]=TSF_CTC_PmzNum_Tuple[1];  TSF_RPNcalcND[1]=TSF_CTC_PmzNum_Tuple[2];
             try{
               TSF_RPNcalcN=count(TSF_RPNcalcND[0],'$')?to!real(to!long(TSF_RPNcalcND[0].replace("$",""),16)):to!real(TSF_RPNcalcND[0]);
-              TSF_RPNcalcD=count(TSF_RPNcalcND[$-1],'$')?to!real(to!long(TSF_RPNcalcND[1].replace("$",""),16)):to!real(TSF_RPNcalcND[1]);
             }
             catch(ConvException e){
-              TSF_RPNcalcD=0.0;  TSF_RPN_pmz='z';
+              if( TSF_RPNcalcND[0]=="n" ){  TSF_RPNcalcN=real.infinity;  }else{  TSF_RPNcalcD=0.0;  TSF_RPN_pmz='z'; }
+            }
+            try{
+              TSF_RPNcalcD=count(TSF_RPNcalcND[1],'$')?to!real(to!long(TSF_RPNcalcND[1].replace("$",""),16)):to!real(TSF_RPNcalcND[1]);
+            }
+            catch(ConvException e){
+              if( TSF_RPNcalcND[1]=="n" ){  TSF_RPNcalcN=real.infinity;  }else{  TSF_RPNcalcD=0.0;  TSF_RPN_pmz='z'; }
             }
             TSF_RPNnumstack~=( TSF_RPNcalcD==0 )?real.infinity:TSF_RPNcalcN/TSF_RPNcalcD;
             TSF_RPNpmzstack~=TSF_RPN_pmz;
@@ -186,14 +191,14 @@ string TSF_CTC_RPN(string TSF_RPN){    //#TSFdoc:逆ポーランド電卓。コ�
               TSF_RPNpmzstackR=TSF_RPNpmzstack.back; TSF_RPNpmzstack.popBack();
             }
             else{
-                TSF_RPNnumstackR=0.0;  TSF_RPNpmzstackR='z';
+              TSF_RPNnumstackR=0.0;  TSF_RPNpmzstackR='z';
             }
             if( TSF_RPNnumstack.length ){
               TSF_RPNnumstackL=TSF_RPNnumstack.back; TSF_RPNnumstack.popBack();
               TSF_RPNpmzstackL=TSF_RPNpmzstack.back; TSF_RPNpmzstack.popBack();
             }
             else{
-                TSF_RPNnumstackL=0.0;  TSF_RPNpmzstackL='z';
+              TSF_RPNnumstackL=0.0;  TSF_RPNpmzstackL='z';
             }
             TSF_RPN_pmzcase=to!string(TSF_RPNpmzstackL)~to!string(TSF_RPNpmzstackR);
             switch( TSF_RPN_ope ){
@@ -221,7 +226,7 @@ string TSF_CTC_RPN(string TSF_RPN){    //#TSFdoc:逆ポーランド電卓。コ�
                     TSF_RPNnumstackL=TSF_RPNnumstackL+TSF_RPNnumstackR;
                   break;
                   case "zm":
-                    TSF_RPNnumstackL=TSF_RPNnumstackL-TSF_RPNnumstackR;  if( TSF_RPNnumstackL<0 ){ TSF_RPNnumstackL=real.infinity; }
+                    TSF_RPNnumstackL=TSF_RPNnumstackL-TSF_RPNnumstackR;  if( TSF_RPNnumstackL<0 ){ TSF_RPNnumstackL=real.nan; }
                   break;
                   case "zz":
                     TSF_RPNnumstackL=TSF_RPNnumstackL+TSF_RPNnumstackR;
@@ -250,13 +255,13 @@ string TSF_CTC_RPN(string TSF_RPN){    //#TSFdoc:逆ポーランド電卓。コ�
                     TSF_RPNnumstackL=-TSF_RPNnumstackL-TSF_RPNnumstackR;
                   break;
                   case "zp":
-                    TSF_RPNnumstackL=TSF_RPNnumstackL-TSF_RPNnumstackR;  if( TSF_RPNnumstackL<0 ){ TSF_RPNnumstackL=real.infinity; }
+                    TSF_RPNnumstackL=TSF_RPNnumstackL-TSF_RPNnumstackR;  if( TSF_RPNnumstackL<0 ){ TSF_RPNnumstackL=real.nan; }
                   break;
                   case "zm":
                     TSF_RPNnumstackL=TSF_RPNnumstackL+TSF_RPNnumstackR;
                   break;
                   case "zz":
-                    TSF_RPNnumstackL=TSF_RPNnumstackL-TSF_RPNnumstackR;  if( TSF_RPNnumstackL<0 ){ TSF_RPNnumstackL=real.infinity; }
+                    TSF_RPNnumstackL=TSF_RPNnumstackL-TSF_RPNnumstackR;  if( TSF_RPNnumstackL<0 ){ TSF_RPNnumstackL=real.nan; }
                   break;
                   default:  break;
                 }
@@ -278,15 +283,17 @@ string TSF_CTC_RPN(string TSF_RPN){    //#TSFdoc:逆ポーランド電卓。コ�
       TSF_RPNnumstackL=0.0;
       TSF_RPNpmzstackL='z';
     }
-    if( TSF_RPNnumstackL==real.infinity ){
-      TSF_RPNanswer=to!char(TSF_RPNpmzstackL)~TSF_CTC_RPNZERO;
+    if( isNaN(TSF_RPNnumstackL) ){
+      TSF_RPNanswer="z"~TSF_CTC_RPNZERO;
     }
     else{
-      TSF_RPNanswer=to!char(TSF_RPNpmzstackL)~to!string(TSF_RPNnumstackL);
+      if( TSF_RPNnumstackL==real.infinity ){
+        TSF_RPNanswer=to!char(TSF_RPNpmzstackL)~TSF_CTC_RPNZERO;
+      }
+      else{
+        TSF_RPNanswer=to!char(TSF_RPNpmzstackL)~to!string(TSF_RPNnumstackL);
+      }
     }
-//    if( TSF_RPNanswer != TSF_CTC_RPNZERO ){
-//      TSF_RPNanswer=to!char(TSF_RPNpmzstackL)~to!string(TSF_RPNnumstackL);
-//    }
     return TSF_RPNanswer;
 }
 
@@ -307,6 +314,7 @@ unittest {
     string[] RPNtests=[
       "1|2","1|0.5","1|0",
       "p1,p2+","p1,m2+","p1,z2+","m1,p2+","m1,m2+","m1,z2+","z1,p2+","z1,m2+","z1,z2+",
+      "pn,pn+","pn,mn+","pn,zn+","mn,pn+","mn,mn+","mn,zn+","zn,pn+","zn,mn+","zn,zn+",
       "p1,p2-","p1,m2-","p1,z2-","m1,p2-","m1,m2-","m1,z2-","z1,p2-","z1,m2-","z1,z2-",
     ];
     foreach(string RPNtest;RPNtests){  TSF_RPNlog=TSF_CTC_printlog("TSF_CTC_RPN( %s ) %s".format(RPNtest,TSF_CTC_RPN(RPNtest)),TSF_RPNlog);  }
