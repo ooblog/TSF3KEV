@@ -155,13 +155,15 @@ string TSF_CTC_RPN(string TSF_RPN){    //#TSFdoc:逆ポーランド電卓。コ�
       case '-': TSF_RPNseq="m"~TSF_RPNseq[1..$]; break;
       case '*': TSF_RPNseq=""~TSF_RPNseq[1..$]; break;
       case '/': TSF_RPNseq="1|"~TSF_RPNseq[1..$]; break;
-      case 'U': if( TSF_RPNseq[1]=='+' ){ TSF_RPNseq="$"~TSF_RPNseq[2..$]; } break;  //"U+"
-      case '0': if( TSF_RPNseq[1]=='x' ){ TSF_RPNseq="$"~TSF_RPNseq[2..$]; } break;  //"0x"
+      case 'U': if( TSF_RPNseq[1]=='+' ){ TSF_RPNseq="x"~TSF_RPNseq[2..$]; } break;  //"U+"
+      case '0': if( TSF_RPNseq[1]=='x' ){ TSF_RPNseq="x"~TSF_RPNseq[2..$]; } break;  //"0x"
       default:  break;
     }
+// getUTCtime()
+// @ daytime 1/(60*60*24*1000=86400000)
     opeexit_rpn:
       foreach(char TSF_RPN_ope;TSF_RPNseq){
-        if( count("0123456789abcdef.pmzn$|",TSF_RPN_ope) ){
+        if( count("1234567890xabcdef.pmzn|",TSF_RPN_ope) ){
           TSF_RPNnum~=TSF_RPN_ope;
         }
         else{
@@ -170,13 +172,13 @@ string TSF_CTC_RPN(string TSF_RPN){    //#TSFdoc:逆ポーランド電卓。コ�
             auto TSF_CTC_PmzNum_Tuple=TSF_CTC_PmzNum(TSF_RPNnum);
             TSF_RPN_pmz=TSF_CTC_PmzNum_Tuple[0];  TSF_RPNcalcND[0]=TSF_CTC_PmzNum_Tuple[1];  TSF_RPNcalcND[1]=TSF_CTC_PmzNum_Tuple[2];
             try{
-              TSF_RPNcalcN=count(TSF_RPNcalcND[0],'$')?to!real(to!long(TSF_RPNcalcND[0].replace("$",""),16)):to!real(TSF_RPNcalcND[0]);
+              TSF_RPNcalcN=count(TSF_RPNcalcND[0],'x')?to!real(to!long(TSF_RPNcalcND[0].replace("x",""),16)):to!real(TSF_RPNcalcND[0]);
             }
             catch(ConvException e){
               if( TSF_RPNcalcND[0]=="n" ){  TSF_RPNcalcN=real.infinity;  }else{  TSF_RPNcalcD=0.0;  TSF_RPN_pmz='z'; }
             }
             try{
-              TSF_RPNcalcD=count(TSF_RPNcalcND[1],'$')?to!real(to!long(TSF_RPNcalcND[1].replace("$",""),16)):to!real(TSF_RPNcalcND[1]);
+              TSF_RPNcalcD=count(TSF_RPNcalcND[1],'x')?to!real(to!long(TSF_RPNcalcND[1].replace("x",""),16)):to!real(TSF_RPNcalcND[1]);
             }
             catch(ConvException e){
               if( TSF_RPNcalcND[1]=="n" ){  TSF_RPNcalcN=real.infinity;  }else{  TSF_RPNcalcD=0.0;  TSF_RPN_pmz='z'; }
@@ -410,7 +412,7 @@ unittest {
 //    TSF_CTC_printlog(TSF_mdtext);
     string TSF_RPNlog="";
     string[] RPNtests=[
-      "1|2","1|0.5","1|0",
+      "1|2","1|0.5","1|0","0xff","U+ffff","80x",
       "Y","y","i",
       "p100P","m100P","z100P","p100M","m100M","z100M","p100Z","m100Z","z100Z",
       "0PS","yPS","yMS",
