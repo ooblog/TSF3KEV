@@ -130,6 +130,8 @@ void TSF_CTC_setnow(){    //#TSFdoc:「@」で取得する現在日時(1|86400�
 //    TSF_CTC_now=to!long(TSF_CTC_systime.toUnixTime);
     TSF_CTC_now=to!long(Clock.currTime().toUnixTime);
     std.stdio.writeln("TSF_CTC_now %s".format(TSF_CTC_now));
+    std.stdio.writeln("Clock.currTime().year %s".format(Clock.currTime().year));
+    std.stdio.writeln("Clock.currTime().fracSecs %s".format(Clock.currTime().fracSecs));
 }
 
 //char[string] TSF_CTC_PmzDiv;
