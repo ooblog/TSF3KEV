@@ -27,6 +27,7 @@ import std.array;
 char[string] TSF_CTC_PmzDiv;
 void TSF_CTC_Init(){    //#TSFdoc:D言語は連想配列初期化(ハッシュのコンパイル前計算)できないので初期化専用関数を用意。
     TSF_CTC_PmzDiv=["pp":'p',"pm":'m',"pz":'p',"mp":'m',"mm":'p',"mz":'m',"zp":'z',"zm":'z',"zz":'z'];
+    TSF_CTC_setnow();
 }
 
 string TSF_CTC_printlog(string TSF_textdup, ...){    //#TSFdoc:テキストをstdoutに表示。ログ追記もできる。(TSFAPI)
@@ -122,6 +123,15 @@ string TSF_CTC_ESCdecode(string TSF_textdup){   //#TSFdoc:「&tab;」を「\t」
     return TSF_text;
 }
 
+
+long TSF_CTC_now=0;
+void TSF_CTC_setnow(){    //#TSFdoc:「@」で取得する現在日時(1|86400秒)を設定。
+//    SysTime TSF_CTC_systime=Clock.currTime();
+//    TSF_CTC_now=to!long(TSF_CTC_systime.toUnixTime);
+    TSF_CTC_now=to!long(Clock.currTime().toUnixTime);
+    std.stdio.writeln("TSF_CTC_now %s".format(TSF_CTC_now));
+}
+
 //char[string] TSF_CTC_PmzDiv;
 auto TSF_CTC_PmzNum(string TSF_num){    //#TSFdoc:正負符号の抽出。(TSFAPI)
     long TSF_p=0,TSF_m=0,TSF_z=TSF_num.length;  char TSF_pmz='z';
@@ -187,7 +197,7 @@ string TSF_CTC_RPN(string TSF_RPN){    //#TSFdoc:逆ポーランド電卓。コ�
             TSF_RPNpmzstack~=TSF_RPN_pmz;
             TSF_RPNnum="";
           }
-          if( count("Yyi",TSF_RPN_ope) ){
+          if( count("Yyi@ut",TSF_RPN_ope) ){
             switch( TSF_RPN_ope ){
               case 'Y':  // pi*2(Yenshu)
                 TSF_RPNnumstackL=std.math.PI*2; TSF_RPNpmzstackL='p';
@@ -197,6 +207,15 @@ string TSF_CTC_RPN(string TSF_RPN){    //#TSFdoc:逆ポーランド電卓。コ�
               break;
               case 'i':  // napier's constant(neipIa)
                 TSF_RPNnumstackL=std.math.E; TSF_RPNpmzstackL='p';
+              break;
+              case '@':  // at day&time
+                TSF_RPNnumstackL=to!real(TSF_CTC_now/86400.0); TSF_RPNpmzstackL='p';
+              break;
+              case 'u':  // at day Unix epoch
+                TSF_RPNnumstackL=to!real(TSF_CTC_now/86400); TSF_RPNpmzstackL='p';
+              break;
+              case 't':  // at time
+                TSF_RPNnumstackL=to!real(TSF_CTC_now%86400); TSF_RPNpmzstackL='p';
               break;
               default:  break;
             }
@@ -370,6 +389,7 @@ string TSF_CTC_RPN(string TSF_RPN){    //#TSFdoc:逆ポーランド電卓。コ�
             }
             TSF_RPNnumstack~=abs(TSF_RPNnumstackL);  TSF_RPNpmzstack~=TSF_RPNpmzstackL;
           }
+//          if( count("Yyi@ut",TSF_RPN_ope) ){  //
 //          if( count("PMZSCTIKGRLXB",TSF_RPN_ope) ){  //L
 //          if( count("+-*/\\_#%<>AH^,TSF_RPN_ope) ){  //L,R
 //          if( count("EQOVUDNF",TSF_RPN_ope) ){  //L,R,F
@@ -413,7 +433,7 @@ unittest {
     string TSF_RPNlog="";
     string[] RPNtests=[
       "1|2","1|0.5","1|0","0xff","U+ffff","80x",
-      "Y","y","i",
+      "Y","y","i","@","u","t","u,t+",
       "p100P","m100P","z100P","p100M","m100M","z100M","p100Z","m100Z","z100Z",
       "0PS","yPS","yMS",
       "0PC","yPC","yMC",
