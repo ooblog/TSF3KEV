@@ -36,6 +36,8 @@ TSFdocs_tags:
 	{$A_D言語_text}	{$A_D言語_href}	{$A_D言語_title}	{?A_D言語}
 	{$A_TSF2kanedit_text}	{$A_TSF2kanedit_href}	{$A_TSF2kanedit_title}	{?A_TSF2kanedit}
 	{$A_TSF1KEV_text}	{$A_TSF1KEV_href}	{$A_TSF1KEV_title}	{?A_TSF2KEV}
+	{$A_KIV_text}	{$A_KIV_href}	{$A_KIV_title}	{?A_KIV_link}
+	{$A_TSF3_text}	{$A_TSF3_href}	{$A_TSF3_title}	{?A_TSF3_link}
 	{$A_syntaximage_title}	{$A_syntaximage_img}	{$A_syntaximage_href}	{$A_syntaximage_text}	{?A_syntaximage}
 	{?A_aboutTSF_text}	{$A_aboutTSF_href}	{$A_aboutTSF_title}	{?A_aboutTSF}
 	{$A_TSFdoc_text}	{$A_TSFdoc_href}	{$A_TSFdoc_title}	{?A_TSFdoc}
@@ -59,7 +61,10 @@ TSFdocs_tags:
 {?TSFreadmebody}
 	{$TSFreadmebody}
 {$TSFreadmebody}
-	{?H1}プログラミング言語「TSF_Tab-Separated-Forth」開発準備(ver3草案)。{?/H1}
+	{?H1}プログラミング言語「TSF_Tab-Separated-Forth」開発準備(開発拠点は「TSF3」に移動)。{?/H1}
+	{?P}
+	「KanEditVim」が「{?A_KIV_link}」に名称変更したので、TSFのリポジトリも「{?A_TSF3_link}」に変更し、密結合から疎結合にしました。{?BR}
+	{?/P}
 	{?H2}TSF超ザックリ説明。{?/H2}
 	{?P}
 	TSFはForth風インタプリタです。構文は文字列をタブで区切るだけ(コメント行と関数カードでシバン「#!」を用いる程度)。{?BR}
@@ -192,6 +197,22 @@ TSFdocs_tags:
 	https://ooblog.github.io/TSF2KEV/
 {$A_TSF1KEV_title}
 	「TSF2KEV」はプログラミング言語「TSF_Tab-Separated-Forth」のD言語とPythonによる実装です。
+{?A_KIV_link}
+	[{$A_KIV_text}]({$A_KIV_href} "{$A_KIV_title}")	<a href="{$A_KIV_href}" title="{$A_KIV_title}">{$A_KIV_text}</a>
+{$A_KIV_text}
+	KanjiInputVim
+{$A_KIV_href}
+	https://github.com/ooblog/KIV
+{$A_KIV_title}
+	漢字直接入力＆漢字直接検索Vimプラグイン「KanjiInputVim」(準備中)。 
+{?A_TSF3_link}
+	[{$A_TSF3_text}]({$A_TSF3_href} "{$A_TSF3_title}")	<a href="{$A_TSF3_href}" title="{$A_TSF3_title}">{$A_TSF3_text}</a>
+{$A_TSF3_text}
+	TSF3
+{$A_TSF3_href}
+	https://github.com/ooblog/TSF3
+{$A_TSF3_title}
+	プログラミング言語「TSF_Tab-Separated-Forth」開発準備(ver3草案)。
 {?A_syntaximage}
 	![{$A_syntaximage_text}]({$A_syntaximage_href} "{$A_syntaximage_title}")	<a href="{$A_syntaximage_href}"><img src="{$A_syntaximage_img}" alt="{$A_syntaximage_text}" title="{$A_syntaximage_title}" width="512" height="384"></a>
 {$A_syntaximage_text}

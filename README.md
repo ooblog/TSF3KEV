@@ -1,4 +1,7 @@
-# プログラミング言語「TSF_Tab-Separated-Forth」開発準備(ver3草案)。
+# プログラミング言語「TSF_Tab-Separated-Forth」開発準備(開発拠点は「TSF3」に移動)。
+
+「KanEditVim」が「[KanjiInputVim](https://github.com/ooblog/KIV "漢字直接入力＆漢字直接検索Vimプラグイン「KanjiInputVim」(準備中)。 ")」に名称変更したので、TSFのリポジトリも「[TSF3](https://github.com/ooblog/TSF3 "プログラミング言語「TSF_Tab-Separated-Forth」開発準備(ver3草案)。")」に変更し、密結合から疎結合にしました。  
+
 ## TSF超ザックリ説明。
 
 TSFはForth風インタプリタです。構文は文字列をタブで区切るだけ(コメント行と関数カードでシバン「#!」を用いる程度)。  
